@@ -31,6 +31,12 @@ Shader "IGameShaderReview/WaterWaveShader"
             sampler2D _MainTex;
             float4    _MainTex_ST;
 
+            float _distanceFactor;
+            float _timeFactor;
+            float _totalFactor;
+            float _waveWidth;
+            float _curWaveDis;
+
             struct a2v 
             {
                 float4 vertex:POSITION;
@@ -54,14 +60,22 @@ Shader "IGameShaderReview/WaterWaveShader"
 
             fixed4 fragShader(v2f o):SV_TARGET
             {
-                fixed2 uv = o.uv;
-
                 // 当前点到纹理中心点的距离
-                fixed2 duv = fixed2(0.5,0.5) - uv;
-                float  dis = sqrt(duv.x*duv.x + duv.y* duy.y);
+                fixed2 dv = fixed2(0.5,0.5) - o.uv;;
+                // 处理屏幕的长宽比
+                dv *= float2(_ScreenParams.x/_ScreenParams.y,1.0);
+                float  dis = sqrt(dv.x*dv.x + dv.y* dv.y);
 
-                fixed4 mainColor = tex2D(_MainTex,o.uv);
-                return mainColor;
+                float sinFactor = sin(dis*_distanceFactor + _Time.y*_timeFactor)*_totalFactor*0.01;
+                float discardFactor = clamp(_waveWidth - abs(_curWaveDis - dis),0,1);
+
+                //归一化
+                float2 dv1 = normalize(dv);
+                //计算每个像素uv的偏移值
+                float2 offset = dv1  * sinFactor * discardFactor;
+                //像素采样时偏移offset
+                float2 uv = offset + o.uv;
+                return tex2D(_MainTex, uv);
             }
 
 
@@ -70,5 +84,5 @@ Shader "IGameShaderReview/WaterWaveShader"
         }
     }
 
-    Fallback "Diffuse"
+    Fallback Off 
 }

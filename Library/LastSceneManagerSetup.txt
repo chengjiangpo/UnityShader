@@ -1,4 +1,4 @@
 sceneSetups:
-- path: "E:/BaiduNetdiskDownload/\u7B2C54\uFF1A\u526F\u672C\u573A\u666F\u751F\u6210\u4E3B\u5C06\u548CNPC/Lesson4/Assets/Scenes/city_home01.unity"
+- path: Assets/Scenes/Shader.unity
   isLoaded: 1
   isActive: 1

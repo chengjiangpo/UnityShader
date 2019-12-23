@@ -77,9 +77,6 @@ Shader "IGameShaderReview/WaterWaveShader"
                 float2 uv = offset + o.uv;
                 return tex2D(_MainTex, uv);
             }
-
-
-
             ENDCG
         }
     }
